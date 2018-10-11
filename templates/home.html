@@ -2,5 +2,11 @@
 
 {% block content %}
 <h1> HOME </h1>
-<p><a href="{% url 'signup'%}"> signup </p>
+    {% if user.is_authenticated %}
+        <a href="{% url 'home'%}">logout</a>
+        Hello {{user.username}}
+    {% else %}
+        <p><a href="{% url 'signup'%}"> signup </p>
+        <p><a href="{% url 'login'%}"> login </p>
+    {% endif %}
 {% endblock %}
