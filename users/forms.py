@@ -15,15 +15,15 @@ class LoginForm(forms.Form):
     password = forms.CharField(label='password', max_length=100)
 
     def clean(self):
-        username = self.cleaned_data['username']
-        password = self.cleaned_data['password']
+        cleaned_data = super().clean()
+        username = self.cleaned_data.get("username")
+        password = self.cleaned_data.get('password')
 
         user = authenticate(username=username,password=password)
         if not user:
             raise forms.ValidationError('Invalid Username or Password')
         else:
             self.user_cache=user
-
         return self.cleaned_data
 
 

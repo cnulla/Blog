@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
-from .forms import SignUpForm
+from django.contrib.auth import login, authenticate,logout
+from .forms import SignUpForm, LoginForm
 from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
@@ -14,7 +14,7 @@ def signup(request):
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
-            login(request)
+            login(request,user)
             return render(request, 'home.html')
         else:
             return render(request, 'signup.html', {'form':form, 'error':form.errors})
@@ -23,16 +23,16 @@ def signup(request):
     return render(request, 'signup.html', {'form':form})
 
 
-def login(request):
-    if request.method =='POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password1')
-        user = authenticate(username=username, password=password)
-        login(request)
-        print (request.user.is_authenticate)
-        if request.user.is_authenticated:
-            return render(request, 'home.html')
-        else:
-            return render(request, 'login.html')
-    return render(request, 'login.html')
+def signin(request):
+    form = LoginForm(request.POST)
+   # import pdb;pdb.set_trace()
+    if form.is_valid():
+        user = form.user_cache
+        login(request,user)
+        return  redirect('home')
+    return render(request, 'login.html', {'form':form})
 
+def signout(request):
+    if request.user.is_authenticated:
+        logout(request)
+        return render(request, 'logout.html')
