@@ -1,9 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import login, authenticate,logout
 from .forms import SignUpForm, LoginForm
 from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
+from django.http import HttpResponseRedirect
+
 
 def signup(request):
 
@@ -25,14 +27,20 @@ def signup(request):
 
 def signin(request):
     form = LoginForm(request.POST)
-   # import pdb;pdb.set_trace()
+
     if form.is_valid():
         user = form.user_cache
         login(request,user)
-        return  redirect('home')
+        #import pdb;pdb.set_trace()
+        return HttpResponseRedirect(reverse('home'))
+    else:
+        form = LoginForm(request.POST)
     return render(request, 'login.html', {'form':form})
 
 def signout(request):
     if request.user.is_authenticated:
         logout(request)
         return render(request, 'logout.html')
+
+def home(request):
+    return render(request, 'home.html')
