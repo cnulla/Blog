@@ -40,7 +40,11 @@ def create_post(request):
 
 def blog_post(request, post_id):
     try:
-        post = Post.objects.get(pk=post_id)
+        post = Post.objects.get(id=post_id)
+        return render(request, 'blog_post.html', {'post': post})
+    except Post.DoesNotExist:
+        raise Http404("Post does not exist")
+
     return render(request, 'blog_post.html')
 
 def home(request):
