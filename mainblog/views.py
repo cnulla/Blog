@@ -6,6 +6,7 @@ from django.shortcuts import (
 )
 from django.http import HttpResponseRedirect, Http404
 from django.views.generic import ListView
+from django.utils import timezone
 
 from .models import Post
 from .forms import PostForm
@@ -40,13 +41,26 @@ def create_post(request):
 
 def blog_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-    """try:
-        post = Post.objects.get(id=post_id)
-        return render(request, 'blog_post.html', {'post': post})
-    except Post.DoesNotExist:
-        raise Http404("Post does not exist")"""
-
     return render(request, 'blog_post.html', {'post': post})
+
+def edit_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    form = PostForm()
+    if request.method == "POST":
+        form = PostForm(instance=post,data=request.POST)
+        if form.is_valid():
+            post.date_added = timezone.now()
+            post.save()
+            return HttpResponseRedirect(reverse('index'))
+        else:
+            form = PostForm(request.POST)
+
+    context = {'form': form,'post':post}
+    return render(request, 'edit_post.html', context)
+
+def archive_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    return render(request, 'archived_post.html',{'post':post})
 
 def home(request):
     render(request, 'home.html')
