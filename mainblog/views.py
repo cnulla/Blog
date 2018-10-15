@@ -39,14 +39,15 @@ def create_post(request):
     return render(request, 'create_post.html', context)
 
 def blog_post(request, post_id):
-    try:
+    post = get_object_or_404(Post, pk=post_id)
+    """try:
         post = Post.objects.get(id=post_id)
         return render(request, 'blog_post.html', {'post': post})
     except Post.DoesNotExist:
-        raise Http404("Post does not exist")
+        raise Http404("Post does not exist")"""
 
-    return render(request, 'blog_post.html')
+    return render(request, 'blog_post.html', {'post': post})
 
 def home(request):
-    return render(request, 'home.html')
+    render(request, 'home.html')
 

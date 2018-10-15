@@ -42,5 +42,5 @@ def signout(request):
         logout(request)
         return render(request, 'logout.html')
 
-def home(request):
-    return render(request, 'home.html')
+
+

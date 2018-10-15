@@ -1,9 +1,9 @@
-from django.conf.urls import url
+from django.urls import path
 from . import views
 
 urlpatterns = [
-    url('signup/', views.signup, name='signup'),
-    url('login/', views.signin, name='signin'),
-    url('logout/', views.signout, name='signout'),
-    url('', views.home, name='home'),
+    path('signup/', views.signup, name='signup'),
+    path('login/', views.signin, name='signin'),
+    path('logout/', views.signout, name='signout'),
+
 ]
