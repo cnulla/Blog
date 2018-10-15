@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
-
 {% block content %}
     <div class="container">
+        <img src="{{ post.cover_image.url }}">
         <h2>{{post.title}}</h2>
         <P>{{post.text}}</p>
         <p>
-        <span><a class="btn btn-primary" href="{% url 'edit_post' post.id %}"> edit </a></span>
-        <span><a class="btn btn-primary" href="{% url 'archive_post' %}"> archive </a></span>
-        <span><a class="btn btn-primary" href="{% url 'index' %}"> back </a></span>
+        <span><a class="btn btn-primary" href="{% url 'edit_post' post.id %}"> Edit </a></span>
+        <span><a class="btn btn-primary" href="{% url 'archived_post' %}"> Archive </a></span>
+        <span><a class="btn btn-primary" href="{% url 'index' %}"> Back </a></span>
         </p>
     </div>
 {% endblock %}

@@ -5,7 +5,7 @@
 {% block content %}
 
 <div class="container">
-    <form method="POST" action="{% url 'create_post' %}" novalidate="">
+    <form method="POST" action="{% url 'create_post' %}" novalidate="" enctype="multipart/form-data">
         <div class="form-group">
             {% csrf_token %}
             <label for="id_{{ form.title.name }}">{{ form.title.label }}</label>
@@ -16,6 +16,9 @@
             <label id="id_{{ form.text.name }}">{{ form.text.name}}</label>
             {{ form.text }}
             {{ form.text.errors }}
+        </div>
+        <div>
+          {{ form.cover_image }}
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>

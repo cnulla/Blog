@@ -9,14 +9,18 @@
         <a href="{% url 'signout'%}">logout</a>
         Hello {{user.username}}
         <p>
-            <span><a href="{% url 'create_post' %}">Create Blog </a></span>
-            <span><a href=#> Archives </a></span>
+            <span><a class="btn btn-primary" href="{% url 'create_post' %}">Create Blog </a></span>
+            <span><a class="btn btn-primary" href=#> Archives </a></span>
+            <span><a class="btn btn-primary" href="#"> Drafts </a> </span>
         </p>
-
-       {% for post in posts %}
-           <h2> <a href="{% url 'blog_post' post.id %}"> {{ post.title }} </a></h2>
-           <h5> Posted by  {{ post.author }} on  {{ post.date_added}} </h5>
-        {% endfor %}
+        <center>
+        <div class="container">
+            {% for post in posts %}
+                <h1> <a href="{% url 'blog_post' post.id %}"> {{ post.title }} </a></h1>
+                <h5> Posted by  {{ post.author }} on  {{ post.date_added}} </h5>
+            {% endfor %}
+        </div>
+        </center>
  {% else %}
         <p><a href="{% url 'signup'%}"> signup </p>
         <p><a href="{% url 'signin'%}"> login </p>

@@ -14,7 +14,7 @@ from django.contrib.auth.models import User
 
 
 def index(request):
-    posts = Post.objects.all()
+    posts = Post.objects.filter(is_archived=False)
     if request.user.is_authenticated:
         posts = posts.filter(author=request.user)
     context = {'posts': posts}
@@ -26,12 +26,12 @@ def create_post(request):
     form =  PostForm()
 
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILE)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
             post.save()
-            return render(request, 'home.html')
+            return HttpResponseRedirect(reverse('index'))
         else:
             #print ('Invalid>>>>>>>>>>>>>>>>>>>>>>>>>')
             form = PostForm(request.POST)
@@ -58,9 +58,10 @@ def edit_post(request, post_id):
     context = {'form': form,'post':post}
     return render(request, 'edit_post.html', context)
 
-def archive_post(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
-    return render(request, 'archived_post.html',{'post':post})
+def archived_post(request):
+    post = Post.objects.filter(is_archived=True)
+   # post.save()
+    return render(request, 'archive_post.html', {'post':post})
 
 def home(request):
     render(request, 'home.html')
