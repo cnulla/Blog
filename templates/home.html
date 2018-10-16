@@ -6,7 +6,7 @@
 <h1> HOME </h1>
 
  {% if user.is_authenticated %}
-        <a href="{% url 'signout'%}">logout</a>
+        <a class="btn btn-primary" href="{% url 'signout'%}">Logout</a>
         Hello {{user.username}}
         <p>
             <span><a class="btn btn-primary" href="{% url 'create_post' %}">Create Blog </a></span>

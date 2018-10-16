@@ -3,6 +3,22 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 # Create your models here.
+class Tag(models.Model):
+    tag_name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.tag_name
+
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField(max_length=100)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = 'Categories'
+
+    def __str__(self):
+        return self.name
 
 class Post(models.Model):
 
@@ -12,17 +28,10 @@ class Post(models.Model):
     date_mod = models.DateTimeField(null=True)
     text = models.TextField(null=True)
     is_archived = models.BooleanField(default=False)
-    cover_image = models.ImageField(upload_to='cover_images/')
+    cover_image = models.ImageField(upload_to='cover_images')
 
-   # category = models.ForeignKey("Category", on_delete=models.CASCADE)
+    category = models.ForeignKey("Category", on_delete=models.CASCADE)
+    tag = models.ManyToManyField("Tag")
+
     def __str__(self):
         return self.title
-
-class Category(models.Model):
-    name = models.CharField(max_length=50)
-    description = models.CharField(max_length=100)
-    date_added = models.DateTimeField(auto_now_add=True)
-
-
-
-

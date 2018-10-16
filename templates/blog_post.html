@@ -4,10 +4,12 @@
         <img src="{{ post.cover_image.url }}">
         <h2>{{post.title}}</h2>
         <P>{{post.text}}</p>
+        <p>{{post.tag}}</p>
+
         <p>
-        <span><a class="btn btn-primary" href="{% url 'edit_post' post.id %}"> Edit </a></span>
-        <span><a class="btn btn-primary" href="{% url 'archived_post' %}"> Archive </a></span>
-        <span><a class="btn btn-primary" href="{% url 'index' %}"> Back </a></span>
+            <span><a class="btn btn-primary" href="{% url 'edit_post' post.id %}"> Edit </a></span>
+            <span><a class="btn btn-primary" href="{% url 'archived_post' %}"> Archive </a></span>
+            <span><a class="btn btn-primary" href="{% url 'index' %}"> Back </a></span>
         </p>
     </div>
 {% endblock %}

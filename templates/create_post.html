@@ -12,6 +12,12 @@
             {{ form.title }}
             {{ form.title.errors }}
         </div>
+        <div>
+          <p> Category: {{ form.category }} </p>
+        </div>
+          <div>
+          <p> Tag: {{ form.tag }} </p>
+        </div>
         <div class="form-group">
             <label id="id_{{ form.text.name }}">{{ form.text.name}}</label>
             {{ form.text }}
