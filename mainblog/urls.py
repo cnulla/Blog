@@ -1,6 +1,5 @@
 from django.urls import path
-from django.conf.urls.static import static
-from django.conf import settings
+
 from . import views
 
 urlpatterns = [
@@ -10,5 +9,4 @@ urlpatterns = [
     path('edit_post/<int:post_id>/edit', views.edit_post, name='edit_post'),
     path('archive_post/', views.archived_post, name='archived_post'),
     path('category_page/<int:category_id>/', views.category_page, name='category_page')
-    #path('', views.home, name='home'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]

@@ -33,5 +33,10 @@ class Post(models.Model):
     category = models.ForeignKey("Category", on_delete=models.CASCADE)
     tag = models.ManyToManyField("Tag")
 
+    @property
+    def image_url(self):
+        if self.cover_image and hasattr(self.cover_image, 'url'):
+            return sef.cover_image
+
     def __str__(self):
         return self.title

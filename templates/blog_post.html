@@ -2,7 +2,9 @@
 {% block content %}
 
 
-<div class="card">
+
+<div class="card" style="width: 50rem;">
+    <img class="card-img-top" src = "{{ post.cover_image.url }}">
     <div class="card-header">
         {{post.title}}
     </div>
