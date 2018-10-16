@@ -26,13 +26,13 @@ def signup(request):
 
 
 def signin(request):
-    form = LoginForm(request.POST)
+    form = LoginForm()
 
     if form.is_valid():
         user = form.user_cache
         login(request,user)
         #import pdb;pdb.set_trace()
-        return HttpResponseRedirect(reverse('home'))
+        return HttpResponseRedirect(reverse('index'))
     else:
         form = LoginForm(request.POST)
     return render(request, 'login.html', {'form':form})

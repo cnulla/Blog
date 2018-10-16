@@ -28,7 +28,7 @@ class Post(models.Model):
     date_mod = models.DateTimeField(null=True)
     text = models.TextField(null=True)
     is_archived = models.BooleanField(default=False)
-    cover_image = models.ImageField(upload_to='cover_images')
+    cover_image = models.ImageField(upload_to='cover_images/')
 
     category = models.ForeignKey("Category", on_delete=models.CASCADE)
     tag = models.ManyToManyField("Tag")

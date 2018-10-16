@@ -8,11 +8,14 @@
  {% if user.is_authenticated %}
         <a class="btn btn-primary" href="{% url 'signout'%}">Logout</a>
         Hello {{user.username}}
-        <p>
-            <span><a class="btn btn-primary" href="{% url 'create_post' %}">Create Blog </a></span>
-            <span><a class="btn btn-primary" href=#> Archives </a></span>
-            <span><a class="btn btn-primary" href="#"> Drafts </a> </span>
-        </p>
+        <span><a class="btn btn-primary" href="{% url 'create_post' %}">Create Blog </a></span>
+
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Category </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Action</a>
+                </div>
+        </div>
         <center>
         <div class="container">
             {% for post in posts %}

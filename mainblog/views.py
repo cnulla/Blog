@@ -15,14 +15,15 @@ from django.contrib.auth.models import User
 
 def index(request):
     posts = Post.objects.filter(is_archived=False)
+    category = Category.objects.all()
     if request.user.is_authenticated:
         posts = posts.filter(author=request.user)
-    context = {'posts': posts}
+    context = {'posts': posts, 'category': category}
+
     return render(request,'home.html', context)
 
 
 def create_post(request):
-
     form =  PostForm()
 
     if request.method == 'POST':
@@ -65,3 +66,10 @@ def archived_post(request):
    # post.save()
     return render(request, 'archive_post.html', {'post':post})
 
+def category_page(request):
+    category = Category.objects.all()
+    return render(request, 'category_post.html', {'category': category})
+
+#def category_post(request, category_id):
+ #   category = get_object_or_404(Category, pk=category_id)
+ #   return render(request, 'category_post.html', {'category': category})
