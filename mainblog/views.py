@@ -66,9 +66,11 @@ def archived_post(request):
    # post.save()
     return render(request, 'archive_post.html', {'post':post})
 
-def category_page(request):
+def category_page(request, category_id):
+
     category = Category.objects.all()
-    return render(request, 'category_post.html', {'category': category})
+    get_category = get_object_or_404(Category, pk=category_id)
+    return render(request, 'category_post.html', {'category': category,'get_category': get_category})
 
 #def category_post(request, category_id):
  #   category = get_object_or_404(Category, pk=category_id)
