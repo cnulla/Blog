@@ -1,28 +1,25 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<center>
+    <div class="card text" style="width: 50rem;">
+        <img class="card-img-top" src = "{{ post.cover_image.url }}">
+            <div class="card-header">
+                <h1>{{post.title}}</h1>
+            </div>
+        <div class="card-body">
+            <p class="card-text">{{post.text}}</p>
+                <small>Category: {{post.category}}</small>
 
-
-<div class="card" style="width: 50rem;">
-    <img class="card-img-top" src = "{{ post.cover_image.url }}">
-    <div class="card-header">
-        {{post.title}}
+                {% for item in post.tag.all %}
+                <small>Tag: {{item}} </small>
+                {% endfor %}
+        </div>
     </div>
-    <div class="card-body">
-        <p class="card-text">{{post.text}}</p>
-        <small>Category: {{post.category}}</small>
-        {% for item in post.tag.all %}
-        <small>Tag: {{item}} </small>
-        {% endfor %}
+    <div class="btn-group" role="group" aria-label="Basic example">
+            <a class="btn btn-secondary" href="{% url 'edit_post' post.id %}"> Edit </a>
+            <a class="btn btn-secondary" href="{% url 'archived_post' post.id %}"> Archive </a>
+            <a class="btn btn-secondary" href="{% url 'index' %}"> Back </a>
     </div>
-
-</div>
-
-</div>
-        <p>
-            <span><a class="btn btn-primary" href="{% url 'edit_post' post.id %}"> Edit </a></span>
-            <span><a class="btn btn-primary" href="{% url 'archived_post' post.id %}"> Archive </a></span>
-            <span><a class="btn btn-primary" href="{% url 'index' %}"> Back </a></span>
-        </p>
-    </div>
+</center>
 {% endblock %}

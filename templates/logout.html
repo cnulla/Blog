@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h5> You logged out! </h5>
-<p><a href="{% url 'index'%}">Back to home</a></p>
-
+<div class="jumbotron">
+    <h1 class="display-4, text-center"></h1>
+            <p class="lead">You logged out!</p>
+            <hr class="my-4">
+            <p class="lead">
+                <a class="btn btn-secondary btn-lg" href="{% url 'index'%}" role="button">Back to home</a>
+            </p>
+</div>
 {% endblock %}

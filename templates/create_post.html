@@ -8,7 +8,7 @@
     <form method="POST" action="{% url 'create_post' %}" novalidate="" enctype="multipart/form-data">
         <div class="form-group">
             {% csrf_token %}
-            <label for="id_{{ form.title.name }}">{{ form.title.label }}</label>
+            <label for="id_{{ form.title.name }}">{{ form.title.label }}:</label>
             {{ form.title }}
             {{ form.title.errors }}
         </div>
@@ -19,7 +19,7 @@
           <p> Tag: {{ form.tag }} </p>
         </div>
         <div class="form-group">
-            <label id="id_{{ form.text.name }}">{{ form.text.name}}</label>
+            <label id="id_{{ form.text.name }}">Content:</label>
             {{ form.text }}
             {{ form.text.errors }}
         </div>
@@ -28,6 +28,6 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-    <span><a href="{% url 'index' %}"> <button class="btn btn-primary">Back</button></a></span>
+    <a href="{% url 'index' %}"> <button class="btn btn-primary">Back</button></a>
  </div>
 {% endblock %}

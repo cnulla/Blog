@@ -1,8 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>{% for post in posts%}</h2>
-    <h1> <a href="{% url 'blog_post' post.id %}"> {{ post.title }} </a></h1>
-    <h5> Posted by  {{ post.author }} on  {{ post.date_added}} </h5>
-    {% endfor %}
+<center>
+    <div class="card">
+        {% for post in posts %}
+        <h1 class="card-header"> <a style="text-decoration: none; color:black;" href="{% url 'blog_post' post.id %}">{{ post.title }}</a> </h1>
+            <div class="card-body">
+                <h3></h3>
+                    <p class="card-text">Posted by  {{ post.author }} on  {{ post.date_added}} </p>
+             </div>
+        {% endfor %}
+        </div>
+</center>
 {% endblock %}
