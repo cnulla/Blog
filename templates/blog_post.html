@@ -12,7 +12,7 @@
                 <small>Category: {{post.category}}</small>
 
                 {% for item in post.tag.all %}
-                <small>Tag: {{item}} </small>
+                <small>Tag: {{item.tag_name}} </small>
                 {% endfor %}
         </div>
     </div>

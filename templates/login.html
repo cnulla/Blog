@@ -8,6 +8,7 @@
     <h3 class="card-title text-center">Sign In</h3>
      <form method="POST" action="{% url 'signin' %}" novalidate="">
         <div class="form-group">
+
             {% csrf_token %}
             <label for="id_username">Username:</label>
             <input type="text" name="username" id="id_username" autofocus="" required="" maxlength="150" class="form-control">

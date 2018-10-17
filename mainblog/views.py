@@ -4,6 +4,8 @@ from django.shortcuts import (
     get_object_or_404,
     reverse
 )
+
+
 from django.http import HttpResponseRedirect, Http404
 from django.views.generic import ListView
 from django.utils import timezone
@@ -14,15 +16,18 @@ from django.contrib.auth.models import User
 
 
 def index(request):
+    import pdb; pdb.set_trace()
     category = Category.objects.all()
+    tags = Tag.objects.all()
     posts = Post.objects.filter(is_archived=False)
     if request.user.is_authenticated:
         posts = posts.filter(author=request.user)
 
-    context = {'posts': posts, 'category': category}
+    context = {'posts': posts, 'category': category, 'tags':tags}
     return render(request,'home.html', context)
 
-
+#TODO
+#add login required decorator
 def create_post(request):
     form =  PostForm()
 
@@ -41,13 +46,16 @@ def create_post(request):
 
 
 def blog_post(request, post_id):
-    post = Post.objects.get(pk=post_id)
+    try:
+        post = Post.objects.get(pk=post_id)
+    except Post.DoesNotExist:
+        raise Http404
     return render(request, 'blog_post.html', {'post': post})
 
 
 def edit_post(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
-    form = PostForm()
+    post = get_object_or_404(Post, pk=post_id, author=request.user)
+    form = PostForm(instance=post)
     if request.method == "POST":
         form = PostForm(instance=post,data=request.POST)
         if form.is_valid():
@@ -61,8 +69,14 @@ def edit_post(request, post_id):
     return render(request, 'edit_post.html', context)
 
 
+def archive_list(request):
+    #TODO
+    #return list arhive post by user
+    pass
+
 def archived_post(request, post_id):
-    posts = get_object_or_404(Post, pk=post_id)
+    #use try and catch error
+    posts = get_object_or_404(Post, pk=post_id, author=request.user)
     posts.is_archived = True
     posts.save()
     return HttpResponseRedirect(reverse('index'))

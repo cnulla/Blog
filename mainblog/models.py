@@ -10,7 +10,7 @@ class Tag(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=100, unique=True, null=True)
+    #slug = models.SlugField(max_length=100, unique=True, null=True)
     description = models.TextField(max_length=100)
     date_added = models.DateTimeField(auto_now_add=True)
 

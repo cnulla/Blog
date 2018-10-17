@@ -25,6 +25,12 @@ class LoginForm(forms.Form):
         username = self.cleaned_data.get("username")
         password = self.cleaned_data.get('password')
 
+        widgets = {
+                "username": forms.TextInput(attrs={'class': 'form-control'}),
+                "password": forms.PasswordInput(attrs={'class': 'form-control'}),
+        }
+
+
         user = authenticate(username=username,password=password)
         if not user:
             raise forms.ValidationError('Invalid Username or Password')
