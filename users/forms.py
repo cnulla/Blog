@@ -10,6 +10,12 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = ('username', 'password1', 'password2')
 
+        widgets = {
+                "username": forms.TextInput(attrs={'class': 'form-control'}),
+                "password1": forms.PasswordInput(attrs={'class': 'form-control'}),
+                "password2": forms.PasswordInput(attrs={'class': 'form-control'}),
+        }
+
 class LoginForm(forms.Form):
     username = forms.CharField(label='username', max_length=100)
     password = forms.CharField(label='password', max_length=100)

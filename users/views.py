@@ -26,13 +26,11 @@ def signup(request):
 
 
 def signin(request):
-    form = LoginForm()
+    form = LoginForm(request.POST)
     if form.is_valid():
         user = form.user_cache
         login(request,user)
         return HttpResponseRedirect(reverse('index'))
-    else:
-        form = LoginForm(request.POST)
     return render(request, 'login.html', {'form':form})
 
 def signout(request):

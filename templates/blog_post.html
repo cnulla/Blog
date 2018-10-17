@@ -10,14 +10,18 @@
     </div>
     <div class="card-body">
         <p class="card-text">{{post.text}}</p>
+        <small>Category: {{post.category}}</small>
+        {% for item in post.tag.all %}
+        <small>Tag: {{item}} </small>
+        {% endfor %}
     </div>
-        {{post.category}}
+
 </div>
 
 </div>
         <p>
             <span><a class="btn btn-primary" href="{% url 'edit_post' post.id %}"> Edit </a></span>
-            <span><a class="btn btn-primary" href="{% url 'archived_post' %}"> Archive </a></span>
+            <span><a class="btn btn-primary" href="{% url 'archived_post' post.id %}"> Archive </a></span>
             <span><a class="btn btn-primary" href="{% url 'index' %}"> Back </a></span>
         </p>
     </div>

@@ -14,11 +14,12 @@ from django.contrib.auth.models import User
 
 
 def index(request):
+    category = Category.objects.all()
     posts = Post.objects.filter(is_archived=False)
     if request.user.is_authenticated:
         posts = posts.filter(author=request.user)
-    context = {'posts': posts, 'category': category}
 
+    context = {'posts': posts, 'category': category}
     return render(request,'home.html', context)
 
 
@@ -60,10 +61,12 @@ def edit_post(request, post_id):
     return render(request, 'edit_post.html', context)
 
 
-def archived_post(request):
-    post = Post.objects.filter(is_archived=True)
-   # post.save()
-    return render(request, 'archive_post.html', {'post':post})
+def archived_post(request, post_id):
+    posts = get_object_or_404(Post, pk=post_id)
+    posts.is_archived = True
+    posts.save()
+    return HttpResponseRedirect(reverse('index'))
+
 
 def category_page(request, category_id):
     get_category = get_object_or_404(Category, pk=category_id)
