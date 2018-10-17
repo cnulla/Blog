@@ -47,10 +47,11 @@ def create_post(request):
 
 def blog_post(request, post_id):
     try:
-        post = Post.objects.get(pk=post_id)
+        post = Post.objects.get(pk=post_id,author=request.user)
+        tags = Post.objects.filter(tag=post.id)
     except Post.DoesNotExist:
         raise Http404
-    return render(request, 'blog_post.html', {'post': post})
+    return render(request, 'blog_post.html', {'post': post, 'tags':tags})
 
 
 def edit_post(request, post_id):

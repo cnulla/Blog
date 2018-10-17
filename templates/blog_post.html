@@ -11,8 +11,8 @@
             <p class="card-text">{{post.text}}</p>
                 <small>Category: {{post.category}}</small>
 
-                {% for item in post.tag.all %}
-                <small>Tag: {{item.tag_name}} </small>
+                {% for item in tags %}
+                <small>Tag: {{item}} </small>
                 {% endfor %}
         </div>
     </div>
