@@ -88,3 +88,8 @@ def category_page(request, category_id):
     posts = Post.objects.filter(category=get_category.id)
     return render(request, 'category_post.html', {'get_category': get_category,'posts': posts})
 
+def tag_page(request, tag_id):
+    tags = get_object_or_404(Tag, pk=tag_id)
+    tag_post = Post.objects.filter(tag=tags.id)
+    pass
+
