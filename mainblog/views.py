@@ -15,7 +15,6 @@ from django.contrib.auth.models import User
 
 def index(request):
     posts = Post.objects.filter(is_archived=False)
-    category = Category.objects.all()
     if request.user.is_authenticated:
         posts = posts.filter(author=request.user)
     context = {'posts': posts, 'category': category}
@@ -67,11 +66,7 @@ def archived_post(request):
     return render(request, 'archive_post.html', {'post':post})
 
 def category_page(request, category_id):
-
-    category = Category.objects.all()
     get_category = get_object_or_404(Category, pk=category_id)
-    return render(request, 'category_post.html', {'category': category,'get_category': get_category})
+    posts = Post.objects.filter(category=get_category.id)
+    return render(request, 'category_post.html', {'get_category': get_category,'posts': posts})
 
-#def category_post(request, category_id):
- #   category = get_object_or_404(Category, pk=category_id)
- #   return render(request, 'category_post.html', {'category': category})

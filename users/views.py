@@ -27,11 +27,9 @@ def signup(request):
 
 def signin(request):
     form = LoginForm()
-
     if form.is_valid():
         user = form.user_cache
         login(request,user)
-        #import pdb;pdb.set_trace()
         return HttpResponseRedirect(reverse('index'))
     else:
         form = LoginForm(request.POST)
