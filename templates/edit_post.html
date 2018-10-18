@@ -10,12 +10,21 @@
                 {{ form.title }}
                 {{ form.title.errors }}
             </div>
-            <div>
-              <p> Category: {{ form.category }} </p>
+            <div class="btn-group">
+                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Category </button>
+                    <div class="dropdown-menu">
+                        {% for item in form.category %}
+                        <a class="dropdown-item">{{ item }} </a>
+                        {% endfor %}
+                    </div>
+             </div>
+            <br>Tags:
+            {% for item in form.tag %}
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="{{item.id_for_label}}">{{item}}
+                <label class="form-check-label" for="{{item.id_for_label}}">{{ item.label }}</label>
             </div>
-              <div>
-              <p> Tag: {{ form.tag }} </p>
-            </div>
+            {% endfor %}
             <div class="form-group">
                 <label id="id_{{ form.text.name }}">Content: </label>
                 {{ form.text }}

@@ -1,4 +1,16 @@
 {% extends 'base.html' %}
-
+{% block title %} Archived List {% endblock %}
 {% block content %}
-{% endblock %}
+<center>
+    <div class="card" style="width: 50rem; margin-top: 8%;">
+        {% for post in archive %}
+        <h1 class="card-header"> <a style="text-decoration: none; color:black;"> {{ post.title }}</a> </h1>
+            <div class="card-body">
+                <h3></h3>
+                    <p class="card-text">Posted by  {{ post.author }} on  {{ post.date_added}} </p>
+                    <a class="btn btn-secondary">Unarchive</a>
+             </div>
+        {% endfor %}
+        </div>
+</center>
+{% endblock%}

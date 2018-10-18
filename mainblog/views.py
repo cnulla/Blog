@@ -16,7 +16,6 @@ from django.contrib.auth.models import User
 
 
 def index(request):
-    import pdb; pdb.set_trace()
     category = Category.objects.all()
     tags = Tag.objects.all()
     posts = Post.objects.filter(is_archived=False)
@@ -30,7 +29,6 @@ def index(request):
 #add login required decorator
 def create_post(request):
     form =  PostForm()
-
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
@@ -73,18 +71,23 @@ def edit_post(request, post_id):
 def archive_list(request):
     #TODO
     #return list arhive post by user
-    pass
+    archive = Post.objects.filter(is_archived=True)
+    return render(request, 'archive_list.html', {'archive': archive})
 
 def archived_post(request, post_id):
-    #use try and catch error
-    posts = get_object_or_404(Post, pk=post_id, author=request.user)
-    posts.is_archived = True
-    posts.save()
-    return HttpResponseRedirect(reverse('index'))
+    #TODO
+    #try catch and error
+    try:
+        posts = get_object_or_404(Post, pk=post_id, author=request.user)
+        posts.is_archived = True
+        posts.save()
+    except Post.DoesNotExist:
+        raise Http404
+    return HttpResponseRedirect(reverse('archive_list'))
 
 
 def category_page(request, category_id):
-    get_category = get_object_or_404(Category, pk=category_id)
+    get_category = get_object_or_404(Category, pk=category_id, author=request.user)
     posts = Post.objects.filter(category=get_category.id)
     return render(request, 'category_post.html', {'get_category': get_category,'posts': posts})
 

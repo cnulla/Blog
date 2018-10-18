@@ -1,7 +1,8 @@
 from django import forms
-from .models import Post, Category
+from .models import Post, Category, Tag
 
 class PostForm(forms.ModelForm):
+    tag = forms.ModelMultipleChoiceField(queryset=Tag.objects, widget=forms.CheckboxSelectMultiple(), required=False)
 
     class Meta:
         model = Post
