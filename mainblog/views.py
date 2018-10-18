@@ -32,7 +32,6 @@ def create_post(request):
     form =  PostForm()
 
     if request.method == 'POST':
-        import pdb; pdb.set_trace()
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
@@ -79,7 +78,7 @@ def archived_post(request, post_id):
     #TODO
     #try catch and error
     try:
-        posts = get_object_or_404(Post, pk=post_id, author=request.user)
+        posts = Post.objects.get(pk=post_id, author=request.user)
         posts.is_archived = True
         posts.save()
     except Post.DoesNotExist:
@@ -98,3 +97,6 @@ def tag_page(request, tag_id):
     tag_post = Post.objects.filter(tag=tags.id)
     return render(request, 'tag_page.html', {'tags': tags, 'tag_post': tag_post})
 
+def draft_list(request):
+    draft = Posts.objects.filter(date_added=False)
+    pass

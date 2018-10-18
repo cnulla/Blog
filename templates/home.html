@@ -41,8 +41,9 @@
 </nav>
 
 <center>
-    <div class="card-text" style="width: 50rem; margin-top: 5%;">
+    <div class="card-text" style="width: 60rem; margin-top: 5%;">
         {% for post in posts %}
+        <img class="card-img-top" src = "{{ post.cover_image.url }}">
         <h1 class="card-header"> <a style="text-decoration: none; color:black;" href="{% url 'blog_post' post.id %}">{{ post.title }}</a> </h1>
             <div class="card-body">
                 <h3></h3>

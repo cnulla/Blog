@@ -8,8 +8,11 @@ from django.http import HttpResponseRedirect
 
 
 def signup(request):
+    form = SignUpForm()
+    template = 'signup.html'
 
     if request.method == 'POST':
+
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
@@ -18,19 +21,19 @@ def signup(request):
             user = authenticate(username=username, password=raw_password)
             login(request,user)
             return HttpResponseRedirect(reverse('index'))
-        else:
-            return render(request, 'signup.html', {'form':form, 'error':form.errors})
-
-    form = SignUpForm()
-    return render(request, 'signup.html', {'form':form})
+    return render(request, template, {'form':form})
 
 
 def signin(request):
-    form = LoginForm(request.POST)
-    if form.is_valid():
-        user = form.user_cache
-        login(request,user)
-        return HttpResponseRedirect(reverse('index'))
+    form = LoginForm()
+
+    if request.method == 'POST':
+        print('post????')
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = form.user_cache
+            login(request,user)
+            return HttpResponseRedirect(reverse('index'))
     return render(request, 'login.html', {'form':form})
 
 def signout(request):
