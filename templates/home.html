@@ -18,7 +18,7 @@
                 Tag</a>
                 <div class="dropdown-menu">
                     {% for item in tags %}
-                    <a class="dropdown-item" href="#">{{item.tag_name}}</a>
+                    <a class="dropdown-item" href="{% url 'tag_page' item.id %}">{{item.tag_name}}</a>
                     {% endfor %}
                 </div>
             <li class="nav-item">

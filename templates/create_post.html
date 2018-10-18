@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} Create {% endblock %}
+{% block title %} Create Post{% endblock %}
 
 {% block content %}
 
@@ -15,13 +15,13 @@
         <div>
             Category: {{ form.category}}
         </div>
-        <br>Tags:
-        {% for item in form.tag %}
+        <br> Tags: {{form.tag}}
+        <!-- {% for item in form.tag %}
         <div class="form-check form-check-inline">
-           <!--  <input class="form-check-input" type="checkbox" id="{{item.id_for_label}}"> -->{{item}}
+            <input class="form-check-input" type="checkbox" id="{{item.id_for_label}}">{{item}}
             <label class="form-check-label" for="{{item.id_for_label}}">{{ item.label }}</label>
         </div>
-        {% endfor %}
+        {% endfor %} -->
         <div class="form-group">
             <label id="id_{{ form.text.name }}">Content:</label>
             {{ form.text }}

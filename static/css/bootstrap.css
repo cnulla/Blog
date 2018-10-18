@@ -111,6 +111,11 @@ dl {
   margin-bottom: 1rem;
 }
 
+ul
+{
+  list-style-type: none;
+}
+
 ol ol,
 ul ul,
 ol ul,

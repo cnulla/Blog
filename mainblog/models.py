@@ -25,14 +25,14 @@ class Post(models.Model):
 
     title = models.CharField(max_length=50)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    date_added = models.DateTimeField(default=timezone.now)
+    date_added = models.DateTimeField(auto_now_add=True)
     date_mod = models.DateTimeField(null=True)
     text = models.TextField(null=True)
     is_archived = models.BooleanField(default=False)
     cover_image = models.ImageField(upload_to='cover_images/')
 
     category = models.ForeignKey("Category", on_delete=models.CASCADE)
-    tag = models.ManyToManyField("Tag")
+    tag = models.ManyToManyField(Tag)
 
     @property
     def image_url(self):

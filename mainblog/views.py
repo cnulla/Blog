@@ -7,6 +7,7 @@ from django.shortcuts import (
 
 
 from django.http import HttpResponseRedirect, Http404
+from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 from django.utils import timezone
 
@@ -18,18 +19,20 @@ from django.contrib.auth.models import User
 def index(request):
     category = Category.objects.all()
     tags = Tag.objects.all()
-    posts = Post.objects.filter(is_archived=False)
+    posts = Post.objects.filter(is_archived=False).order_by('date_added')
     if request.user.is_authenticated:
         posts = posts.filter(author=request.user)
 
     context = {'posts': posts, 'category': category, 'tags':tags}
     return render(request,'home.html', context)
 
-#TODO
-#add login required decorator
+
+@login_required
 def create_post(request):
     form =  PostForm()
+
     if request.method == 'POST':
+        import pdb; pdb.set_trace()
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
@@ -51,13 +54,13 @@ def blog_post(request, post_id):
         raise Http404
     return render(request, 'blog_post.html', {'post': post, 'tags':tags})
 
-
 def edit_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id, author=request.user)
     form = PostForm(instance=post)
     if request.method == "POST":
         form = PostForm(instance=post,data=request.POST)
         if form.is_valid():
+            post.tag.set = request.POST['tag']
             post.date_added = timezone.now()
             post.save()
             return HttpResponseRedirect(reverse('index'))
@@ -69,8 +72,6 @@ def edit_post(request, post_id):
 
 
 def archive_list(request):
-    #TODO
-    #return list arhive post by user
     archive = Post.objects.filter(is_archived=True)
     return render(request, 'archive_list.html', {'archive': archive})
 
@@ -85,14 +86,15 @@ def archived_post(request, post_id):
         raise Http404
     return HttpResponseRedirect(reverse('archive_list'))
 
-
+@login_required
 def category_page(request, category_id):
-    get_category = get_object_or_404(Category, pk=category_id, author=request.user)
+    get_category = get_object_or_404(Category, pk=category_id)
     posts = Post.objects.filter(category=get_category.id)
     return render(request, 'category_post.html', {'get_category': get_category,'posts': posts})
+
 
 def tag_page(request, tag_id):
     tags = get_object_or_404(Tag, pk=tag_id)
     tag_post = Post.objects.filter(tag=tags.id)
-    pass
+    return render(request, 'tag_page.html', {'tags': tags, 'tag_post': tag_post})
 

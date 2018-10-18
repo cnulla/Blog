@@ -8,5 +8,6 @@ urlpatterns = [
     path('edit_post/<int:post_id>/edit', views.edit_post, name='edit_post'),
     path('archive_post/<int:post_id>', views.archived_post, name='archived_post'),
     path('category_page/<int:category_id>/', views.category_page, name='category_page'),
-    path('archive_list/', views.archive_list, name='archive_list')
+    path('archive_list/', views.archive_list, name='archive_list'),
+    path('tag_page/<int:tag_id>/', views.tag_page, name='tag_page')
 ]
