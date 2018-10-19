@@ -16,7 +16,7 @@
     <div class="btn-group" role="group" aria-label="Basic example">
             <a class="btn btn-secondary" href="{% url 'edit_post' post.id %}"> Edit </a>
             <a class="btn btn-secondary" href="{% url 'archived_post' post.id %}"> Archive </a>
-            <a class="btn btn-secondary" href="#"> Draft </a>
+            <a class="btn btn-secondary" href="{% url 'draft_list'} draft.id"> Draft </a>
             <a class="btn btn-secondary" href="{% url 'index' %}"> Back </a>
     </div>
 </center>

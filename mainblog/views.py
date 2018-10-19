@@ -19,11 +19,12 @@ from django.contrib.auth.models import User
 def index(request):
     category = Category.objects.all()
     tags = Tag.objects.all()
-    posts = Post.objects.filter(is_archived=False).order_by('date_added')
+    posts = Post.objects.filter(is_archived=False).order_by('-date_added')
+    draft = Post.objects.filter(date_added__isnull=False)
     if request.user.is_authenticated:
         posts = posts.filter(author=request.user)
 
-    context = {'posts': posts, 'category': category, 'tags':tags}
+    context = {'posts': posts, 'category': category, 'tags':tags,'draft': draft}
     return render(request,'home.html', context)
 
 
@@ -87,6 +88,7 @@ def archived_post(request, post_id):
 
 @login_required
 def category_page(request, slug):
+    # Display list of blog per cateory
     get_category = get_object_or_404(Category, slug=slug)
     posts = Post.objects.filter(category=get_category)
     return render(request, 'category_post.html', {'get_category': get_category,'posts': posts})
@@ -97,6 +99,13 @@ def tag_page(request, tag_id):
     tag_post = Post.objects.filter(tag=tags.id)
     return render(request, 'tag_page.html', {'tags': tags, 'tag_post': tag_post})
 
-def draft_list(request):
-    draft = Posts.objects.filter(date_added=False)
-    pass
+def draft_list(request, draft_id):
+    template = 'draft_list.html'
+    try:
+        draft = Post.objects.get(pk=post_id, author=request.user)
+        draft.date_added__isnull = True
+        draft.save()
+    except Post.DoesNotExist:
+        raise Http404
+    context = {'draft':draft}
+    return render(request, template, context)
