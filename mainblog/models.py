@@ -36,7 +36,7 @@ class Post(models.Model):
     text = models.TextField(null=True)
     is_archived = models.BooleanField(default=False)
     cover_image = models.ImageField(upload_to='cover_images/')
-    draft = models.BooleanField(default=False)
+    is_draft = models.BooleanField(default=False)
 
     category = models.ForeignKey("Category", on_delete=models.CASCADE)
     tag = models.ManyToManyField(Tag)

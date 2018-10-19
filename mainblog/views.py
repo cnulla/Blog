@@ -20,7 +20,7 @@ def index(request):
     category = Category.objects.all()
     tags = Tag.objects.all()
     posts = Post.objects.filter(is_archived=False).order_by('-date_added')
-    draft = Post.objects.filter(date_added__isnull=False)
+    draft = Post.objects.filter(is_draft=False)
     if request.user.is_authenticated:
         posts = posts.filter(author=request.user)
 
@@ -57,10 +57,11 @@ def blog_post(request, post_id):
 def edit_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id, author=request.user)
     form = PostForm(instance=post)
+    # import pdb; pdb.set_trace()
     if request.method == "POST":
         form = PostForm(instance=post,data=request.POST)
         if form.is_valid():
-            post.tag.set = request.POST['tag']
+            # post.tag.set = request.POST['tag']
             post.date_added = timezone.now()
             post.save()
             return HttpResponseRedirect(reverse('index'))
@@ -103,9 +104,21 @@ def draft_list(request, draft_id):
     template = 'draft_list.html'
     try:
         draft = Post.objects.get(pk=post_id, author=request.user)
-        draft.date_added__isnull = True
+        draft.is_draft = True
         draft.save()
     except Post.DoesNotExist:
         raise Http404
     context = {'draft':draft}
     return render(request, template, context)
+
+def draft_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    if request.method == 'POST':
+        is_archived = request.POST.get('archive')
+
+        post.save()
+        return redirect('blog_post', post_id=post.id)
+
+
+
+

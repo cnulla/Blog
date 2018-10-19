@@ -16,7 +16,12 @@
     <div class="btn-group" role="group" aria-label="Basic example">
             <a class="btn btn-secondary" href="{% url 'edit_post' post.id %}"> Edit </a>
             <a class="btn btn-secondary" href="{% url 'archived_post' post.id %}"> Archive </a>
-            <a class="btn btn-secondary" href="{% url 'draft_list'} draft.id"> Draft </a>
+
+            <form method="post" action="{% url 'draft_post' post.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="archive" value="{{post.is_draft}}">
+                <button type="submit">{% if post.is_draft %}Unarchived{% else %}Set as Draft{%endif %}</button>
+            </form>
             <a class="btn btn-secondary" href="{% url 'index' %}"> Back </a>
     </div>
 </center>
