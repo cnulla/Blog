@@ -28,7 +28,6 @@ def signin(request):
     form = LoginForm()
 
     if request.method == 'POST':
-        print('post????')
         form = LoginForm(request.POST)
         if form.is_valid():
             user = form.user_cache

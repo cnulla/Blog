@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 # Create your models here.
 class Tag(models.Model):
     tag_name = models.CharField(max_length=20)
@@ -10,15 +11,19 @@ class Tag(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
-    #slug = models.SlugField(max_length=100, unique=True, null=True)
     description = models.TextField(max_length=100)
     date_added = models.DateTimeField(auto_now_add=True)
+    slug = models.SlugField(unique=True)
 
     class Meta:
         verbose_name_plural = 'Categories'
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Category, self).save(*args, **kwargs)
 
 
 class Post(models.Model):
@@ -30,6 +35,7 @@ class Post(models.Model):
     text = models.TextField(null=True)
     is_archived = models.BooleanField(default=False)
     cover_image = models.ImageField(upload_to='cover_images/')
+    draft = models.BooleanField(default=False)
 
     category = models.ForeignKey("Category", on_delete=models.CASCADE)
     tag = models.ManyToManyField(Tag)

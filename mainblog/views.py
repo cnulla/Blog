@@ -86,9 +86,9 @@ def archived_post(request, post_id):
     return HttpResponseRedirect(reverse('archive_list'))
 
 @login_required
-def category_page(request, category_id):
-    get_category = get_object_or_404(Category, pk=category_id)
-    posts = Post.objects.filter(category=get_category.id)
+def category_page(request, slug):
+    get_category = get_object_or_404(Category, slug=slug)
+    posts = Post.objects.filter(category=get_category)
     return render(request, 'category_post.html', {'get_category': get_category,'posts': posts})
 
 

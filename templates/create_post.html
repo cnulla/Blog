@@ -10,10 +10,11 @@
             {% csrf_token %}
             <label for="id_{{ form.title.name }}">{{ form.title.label }}:</label>
             {{ form.title }}
-            {{ form.title.errors }}
+            <small class="red">{{ form.title.errors }}</small>
         </div>
         <div>
             Category: {{ form.category}}
+            <small class="red">{{ form.category.errors }}</small>
         </div>
         <br> Tags: {{form.tag}}
         <!-- {% for item in form.tag %}
@@ -25,10 +26,11 @@
         <div class="form-group">
             <label id="id_{{ form.text.name }}">Content:</label>
             {{ form.text }}
-            {{ form.text.errors }}
+            <small class="red">{{ form.text.errors }}</small>
         </div>
         <div>
           {{ form.cover_image }}
+          <small class="red">{{ form.cover_image.errors }}</small>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>

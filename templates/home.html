@@ -4,6 +4,7 @@
 
 {% block content %}
 {% if user.is_authenticated %}
+<!-- This is the navbar -->
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
     <small class="navbar-brand" href="#">Hello {{user.username}} </small>
         <ul class="navbar-nav">
@@ -27,7 +28,7 @@
                 Category</a>
                 <div class="dropdown-menu">
                     {% for cat in category %}
-                    <a class="dropdown-item" href="{% url 'category_page' cat.id %}">{{cat.name}}</a>
+                    <a class="dropdown-item" href="{% url 'category_page' cat.slug %}">{{cat.name}}</a>
                     {% endfor %}
                 </div>
             </li>
@@ -39,9 +40,9 @@
             </li>
         </ul>
 </nav>
-
+<!-- This is the blog post -->
 <center>
-    <div class="card-text" style="width: 60rem; margin-top: 5%;">
+    <div class="card bg-light mb-3" style="width: 60rem; margin-top: 5%;">
         {% for post in posts %}
         <img class="card-img-top" src = "{{ post.cover_image.url }}">
         <h1 class="card-header"> <a style="text-decoration: none; color:black;" href="{% url 'blog_post' post.id %}">{{ post.title }}</a> </h1>
