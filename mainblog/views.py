@@ -79,9 +79,15 @@ def edit_post(request, post_id):
     return render(request, 'edit_post.html', context)
 
 
-def archive_list(request):
-    archive = Post.objects.filter(is_archived=True)
-    return render(request, 'archive_list.html', {'archive': archive})
+class ArchiveListView(ListView):
+    """List of Blog Archives"""
+    model = Post
+    template_name = 'archive_list.html'
+
+    def get(self, *args, **kwargs):
+        archive = Post.objects.filter(is_archived=True)
+        context = {'archive': archive}
+        return render(self.request, self.template_name, context)
 
 
 def archived_post(request, post_id):
