@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} Create Post{% endblock %}
+{% block title %} Create Post {% endblock %}
 
 {% block content %}
 
@@ -17,6 +17,10 @@
             <small class="red">{{ form.category.errors }}</small>
         </div>
         <br> Tags: {{form.tag}}
+       <!--  <div class="form-group">
+            {{ tag.tag_input }}
+            <small class="red">{{ tag.tag_input.errors }}</small>
+        </div> -->
         <div class="form-group">
             <label id="id_{{ form.text.name }}">Content:</label>
             {{ form.text }}

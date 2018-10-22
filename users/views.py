@@ -5,40 +5,53 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.views.generic.base import TemplateView, View
 
 
-def signup(request):
-    form = SignUpForm()
-    template = 'signup.html'
+class SignUpView(TemplateView):
+    """ User SignUp View """
+    template_name = 'signup.html'
 
-    if request.method == 'POST':
+    def get(self, *args, **kwargs):
+        form = SignUpForm()
+        context = {'form': form}
+        return render(self.request, self.template_name, context)
 
-        form = SignUpForm(request.POST)
+    def post(self, *args, **kwargs):
+        form = SignUpForm(self.request.POST)
+
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request,user)
             return HttpResponseRedirect(reverse('index'))
-    return render(request, template, {'form':form})
+        context = {'form':form }
+        return render(self.request, self.template_name, context)
 
 
-def signin(request):
-    form = LoginForm()
+class SignInView(TemplateView):
+    """ User SignIn View"""
+    template_name = 'login.html'
 
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
+    def get(self, *args, **kwargs):
+        form = LoginForm()
+        context = {'form': form}
+        return render(self.request, self.template_name, context)
+
+    def post(self, *args, **kwargs):
+        form = LoginForm(self.request.POST)
+
         if form.is_valid():
             user = form.user_cache
-            login(request,user)
+            login(self.request, user)
             return HttpResponseRedirect(reverse('index'))
-    return render(request, 'login.html', {'form':form})
-
-def signout(request):
-    if request.user.is_authenticated:
-        logout(request)
-        return render(request, 'logout.html')
+        context = {'form': form}
+        return render(self.request, self.template_name, context)
 
 
+class SignOutView(TemplateView):
+    """User SignOut View"""
+    template_name = 'logout.html'
 
+    def get(self, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            logout(self.request)
+            return render(self.request, self.template_name)

@@ -14,3 +14,8 @@ class PostForm(forms.ModelForm):
                 # "category": forms.ChoiceField(attrs={'class': 'form-control'}),
         }
 
+class TagForm(forms.ModelForm):
+
+        class Meta:
+            model = Tag
+            fields = ['tag_input']

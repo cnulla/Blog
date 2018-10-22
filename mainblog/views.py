@@ -10,8 +10,12 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
 from .models import Post, Category, Tag
-from .forms import PostForm
+from .forms import PostForm, TagForm
 from django.contrib.auth.models import User
+from django.views.generic.base import TemplateView, View
+from django.views.generic.list import ListView
+
+
 
 
 def index(request):
@@ -29,12 +33,16 @@ def index(request):
 @login_required
 def create_post(request):
     form =  PostForm()
+    # tag = TagForm()
 
     if request.method == 'POST':
+        import pdb; pdb.set_trace()
         form = PostForm(request.POST, request.FILES)
+        # tag = TagForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
+            # post, created = Post.objects.get_or_create(defaults__exact=tag)
             post.save()
             return HttpResponseRedirect(reverse('index'))
         else:
