@@ -5,10 +5,8 @@ from django.shortcuts import (
     reverse
 )
 
-
 from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView
 from django.utils import timezone
 
 from .models import Post, Category, Tag
@@ -54,6 +52,7 @@ def blog_post(request, post_id):
         raise Http404
     return render(request, 'blog_post.html', {'post': post, 'tags':tags})
 
+
 def edit_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id, author=request.user)
     form = PostForm(instance=post)
@@ -76,9 +75,8 @@ def archive_list(request):
     archive = Post.objects.filter(is_archived=True)
     return render(request, 'archive_list.html', {'archive': archive})
 
+
 def archived_post(request, post_id):
-    #TODO
-    #try catch and error
     try:
         posts = Post.objects.get(pk=post_id, author=request.user)
         posts.is_archived = True
@@ -86,6 +84,7 @@ def archived_post(request, post_id):
     except Post.DoesNotExist:
         raise Http404
     return HttpResponseRedirect(reverse('archive_list'))
+
 
 @login_required
 def category_page(request, slug):
@@ -100,25 +99,23 @@ def tag_page(request, tag_id):
     tag_post = Post.objects.filter(tag=tags.id)
     return render(request, 'tag_page.html', {'tags': tags, 'tag_post': tag_post})
 
+
 def draft_list(request, draft_id):
     template = 'draft_list.html'
-    try:
-        draft = Post.objects.get(pk=post_id, author=request.user)
-        draft.is_draft = True
-        draft.save()
-    except Post.DoesNotExist:
-        raise Http404
-    context = {'draft':draft}
-    return render(request, template, context)
+    return render(request, template)
+
 
 def draft_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-    if request.method == 'POST':
-        is_archived = request.POST.get('archive')
 
+    if request.method == 'POST':
+        is_draft = post.is_draft
+        if is_draft == False:
+            post.is_draft = True
+            post.save()
+            return redirect('blog_post', post_id=post.id)
+
+        post.is_draft = False
         post.save()
         return redirect('blog_post', post_id=post.id)
-
-
-
 
