@@ -19,10 +19,16 @@ from django.views.generic import (
     DetailView
 )
 
-# class IndexView(TemplateView):
-#     template_name = 'home.html'
+class IndexView(TemplateView):
+    template_name = 'home.html'
+    model = Post, Category, Tag
 
-#     def get
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['blog_list'] = Post.objects.filter(is_archived=False).order_by('-date_added')
+        context['category'] = Category.objects.all()
+        context['tag'] = Tag.objects.all()
+        return context
 
 
 def index(request):

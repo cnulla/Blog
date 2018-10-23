@@ -18,7 +18,7 @@
                 <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
                 Tag</a>
                 <div class="dropdown-menu">
-                    {% for item in tags %}
+                    {% for item in tag %}
                     <a class="dropdown-item" href="{% url 'tag_page' item.id %}">{{item.tag_name}}</a>
                     {% endfor %}
                 </div>
@@ -46,7 +46,7 @@
 <!-- This is the blog post -->
 <center>
     <div class="card bg-light mb-3" style="width: 60rem; margin-top: 5%;">
-        {% for post in posts %}
+        {% for post in blog_list %}
         <img class="card-img-top" src = "{{ post.cover_image.url }}">
         <h1 class="card-header"> <a style="text-decoration: none; color:black;" href="{% url 'blog_post' post.id %}">{{ post.title }}</a> </h1>
             <div class="card-body">

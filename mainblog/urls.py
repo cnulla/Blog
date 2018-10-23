@@ -2,11 +2,12 @@ from django.urls import path
 from . import views
 from mainblog.views import (
     ArchiveListView,
-    BlogDetailView
+    BlogDetailView,
+    IndexView
 )
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', IndexView.as_view(), name='index'),
     path('create_post/', views.create_post, name='create_post'),
     path('blog_post/<int:post_id>/', views.blog_post, name='blog_post'),
     path('edit_post/<int:post_id>/edit', views.edit_post, name='edit_post'),
