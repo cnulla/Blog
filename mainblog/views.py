@@ -12,19 +12,18 @@ from django.utils import timezone
 from .models import Post, Category, Tag
 from .forms import PostForm, TagForm
 from django.contrib.auth.models import User
-from django.views.generic import TemplateView, View, ListView, DetailView
+from django.views.generic import TemplateView, View
 
 
-def index(request):
-    category = Category.objects.all()
-    tags = Tag.objects.all()
-    posts = Post.objects.filter(is_archived=False).order_by('-date_added')
-    draft = Post.objects.filter(is_draft=False)
-    if request.user.is_authenticated:
-        posts = posts.filter(author=request.user)
+class IndexView(TemplateView):
 
-    context = {'posts': posts, 'category': category, 'tags':tags,'draft': draft}
-    return render(request,'home.html', context)
+    template_name = 'home.html'
+    def get(self, *args, **kwargs):
+        category = Category.objects.all()
+        tags = Tag.objects.all()
+        posts = Post.objects.filter(is_archived=False).order_by('-date_added')
+        context = {'posts': posts, 'tags': tags, 'category': category}
+        return render(self.request, self.template_name, context)
 
 
 @login_required
@@ -48,14 +47,6 @@ def create_post(request):
     context = {'form': form}
     return render(request, 'create_post.html', context)
 
-
-# class BlogDetailView(DetailView):
-#     """ Blog Detail """
-#     model = Post
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         return context
 
 def blog_post(request, post_id):
     try:
@@ -84,19 +75,14 @@ def edit_post(request, post_id):
     return render(request, 'edit_post.html', context)
 
 
-# class ArchiveListView(ListView):
-#     """List of Blog Archives"""
-#     model = Post
-#     template_name = 'archive_list.html'
+class ArchiveListView(TemplateView):
+    """ Display list of archive list
+    """
+    template_name = 'archive_list.html'
 
-#     def get(self, *args, **kwargs):
-#         archive = Post.objects.filter(is_archived=True)
-#         context = {'archive': archive}
-#         return render(self.request, self.template_name, context)
-
-def archive_list(request):
-    archive = Post.objects.filter(is_archived=True)
-    return render(request, 'archive_list.html', {'archive': archive})
+    def get(self, *args, **kwargs):
+        archive = Post.objects.filter(is_archived=True)
+        return render(self.request, self.template_name, {'archive': archive})
 
 
 def archived_post(request, post_id):
@@ -121,11 +107,6 @@ def tag_page(request, tag_id):
     tags = get_object_or_404(Tag, pk=tag_id)
     tag_post = Post.objects.filter(tag=tags.id)
     return render(request, 'tag_page.html', {'tags': tags, 'tag_post': tag_post})
-
-
-def draft_list(request, draft_id):
-    template = 'draft_list.html'
-    return render(request, template)
 
 
 def draft_post(request, post_id):
