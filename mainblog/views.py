@@ -12,30 +12,14 @@ from django.utils import timezone
 from .models import Post, Category, Tag
 from .forms import PostForm, TagForm
 from django.contrib.auth.models import User
-from django.views.generic import (
-    TemplateView,
-    View,
-    ListView,
-    DetailView
-)
-
-class IndexView(TemplateView):
-    template_name = 'home.html'
-    model = Post, Category, Tag
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['blog_list'] = Post.objects.filter(is_archived=False).order_by('-date_added')
-        context['category'] = Category.objects.all()
-        context['tag'] = Tag.objects.all()
-        return context
+from django.views.generic import TemplateView, View, ListView, DetailView
 
 
 def index(request):
     category = Category.objects.all()
     tags = Tag.objects.all()
     posts = Post.objects.filter(is_archived=False).order_by('-date_added')
-    draft = Post.objects.filter(is_draft=True)
+    draft = Post.objects.filter(is_draft=False)
     if request.user.is_authenticated:
         posts = posts.filter(author=request.user)
 
@@ -65,13 +49,13 @@ def create_post(request):
     return render(request, 'create_post.html', context)
 
 
-class BlogDetailView(DetailView):
-    """ Blog Detail """
-    model = Post
+# class BlogDetailView(DetailView):
+#     """ Blog Detail """
+#     model = Post
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         return context
 
 def blog_post(request, post_id):
     try:
@@ -100,15 +84,20 @@ def edit_post(request, post_id):
     return render(request, 'edit_post.html', context)
 
 
-class ArchiveListView(ListView):
-    """List of Blog Archives"""
-    model = Post
-    template_name = 'archive_list.html'
+# class ArchiveListView(ListView):
+#     """List of Blog Archives"""
+#     model = Post
+#     template_name = 'archive_list.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['archive_list'] = Post.objects.filter(is_archived=True)
-        return context
+#     def get(self, *args, **kwargs):
+#         archive = Post.objects.filter(is_archived=True)
+#         context = {'archive': archive}
+#         return render(self.request, self.template_name, context)
+
+def archive_list(request):
+    archive = Post.objects.filter(is_archived=True)
+    return render(request, 'archive_list.html', {'archive': archive})
+
 
 def archived_post(request, post_id):
     try:
