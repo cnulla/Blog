@@ -67,23 +67,20 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request,user)
-            return render(request, 'home.html')
-        else:
-            return render(request, 'signup.html', {'form':form, 'error':form.errors})
+            return HttpResponseRedirect(reverse('index'))
 
     form = SignUpForm()
     return render(request, 'signup.html', {'form':form})
 
 
 def signin(request):
-    form = LoginForm(request.POST)
-
-    if form.is_valid():
-        user = form.user_cache
-        login(request,user)
-        return HttpResponseRedirect(reverse('home'))
-    else:
+    form = LoginForm()
+    if request.method == 'POST':
         form = LoginForm(request.POST)
+        if form.is_valid():
+            user = form.user_cache
+            login(request,user)
+            return HttpResponseRedirect(reverse('index'))
     return render(request, 'login.html', {'form':form})
 
 def signout(request):
