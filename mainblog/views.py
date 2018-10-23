@@ -12,17 +12,24 @@ from django.utils import timezone
 from .models import Post, Category, Tag
 from .forms import PostForm, TagForm
 from django.contrib.auth.models import User
-from django.views.generic.base import TemplateView, View
-from django.views.generic.list import ListView
+from django.views.generic import (
+    TemplateView,
+    View,
+    ListView,
+    DetailView
+)
 
+# class IndexView(TemplateView):
+#     template_name = 'home.html'
 
+#     def get
 
 
 def index(request):
     category = Category.objects.all()
     tags = Tag.objects.all()
     posts = Post.objects.filter(is_archived=False).order_by('-date_added')
-    draft = Post.objects.filter(is_draft=False)
+    draft = Post.objects.filter(is_draft=True)
     if request.user.is_authenticated:
         posts = posts.filter(author=request.user)
 
@@ -51,6 +58,14 @@ def create_post(request):
     context = {'form': form}
     return render(request, 'create_post.html', context)
 
+
+class BlogDetailView(DetailView):
+    """ Blog Detail """
+    model = Post
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
 def blog_post(request, post_id):
     try:
@@ -84,11 +99,10 @@ class ArchiveListView(ListView):
     model = Post
     template_name = 'archive_list.html'
 
-    def get(self, *args, **kwargs):
-        archive = Post.objects.filter(is_archived=True)
-        context = {'archive': archive}
-        return render(self.request, self.template_name, context)
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['archive_list'] = Post.objects.filter(is_archived=True)
+        return context
 
 def archived_post(request, post_id):
     try:
