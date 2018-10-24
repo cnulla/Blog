@@ -16,7 +16,7 @@ from django.views.generic import TemplateView, View
 
 
 class IndexView(TemplateView):
-
+    """ Display All Published Blogs of the user"""
     template_name = 'home.html'
     def get(self, *args, **kwargs):
         category = Category.objects.all()
@@ -26,53 +26,75 @@ class IndexView(TemplateView):
         return render(self.request, self.template_name, context)
 
 
-@login_required
-def create_post(request):
-    form =  PostForm()
-    # tag = TagForm()
+class CreateView(TemplateView):
+    """ Create a blog """
+    template_name = 'create_post.html'
 
-    if request.method == 'POST':
-        import pdb; pdb.set_trace()
-        form = PostForm(request.POST, request.FILES)
-        # tag = TagForm(request.POST)
+    def get(self, *args, **kwargs):
+        form = PostForm()
+        return render(self.request, self.template_name, {'form': form})
+
+    def post(self, *args, **kwargs):
+        form = PostForm(self.request.POST, self.request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = request.user
-            # post, created = Post.objects.get_or_create(defaults__exact=tag)
+            post.author = self.request.user
             post.save()
             return HttpResponseRedirect(reverse('index'))
-        else:
-            form = PostForm(request.POST)
-
-    context = {'form': form}
-    return render(request, 'create_post.html', context)
 
 
-def blog_post(request, post_id):
-    try:
-        post = Post.objects.get(pk=post_id,author=request.user)
-        tags = Post.objects.filter(tag=post.id)
-    except Post.DoesNotExist:
-        raise Http404
-    return render(request, 'blog_post.html', {'post': post, 'tags':tags})
+class BlogDetailView(TemplateView):
+    """ Display the detail of the blog """
+    template_name = 'blog_post.html'
 
+    def get(self, *args, **kwargs):
+        try:
+            post = Post.objects.get(pk=kwargs.get('id'),author=self.request.user)
+        except Post.DoesNotExist:
+            raise Http404
+        return render(self.request, self.template_name, {'post': post})
 
-def edit_post(request, post_id):
-    post = get_object_or_404(Post, pk=post_id, author=request.user)
-    form = PostForm(instance=post)
-    # import pdb; pdb.set_trace()
-    if request.method == "POST":
-        form = PostForm(instance=post,data=request.POST)
+# def blog_post(request, post_id):
+#     try:
+#         post = Post.objects.get(pk=post_id,author=request.user)
+#         tags = Post.objects.filter(tag=post.id)
+#     except Post.DoesNotExist:
+#         raise Http404
+#     return render(request, 'blog_post.html', {'post': post, 'tags':tags})
+
+class EditView(TemplateView):
+    """ Let the user edit his/her blog"""
+    template_name = 'edit_post.html'
+
+    def get(self, *args, **kwargs):
+        post = get_object_or_404(Post, pk=post_id, author=self.request.user)
+        form = PostForm(instance=post)
+        return render(self.request, self.template_name, {'post': post, 'form': form})
+
+    def post(self, *args, **kwargs):
+        form = PostForm(instance=post, data=self.request.POST)
         if form.is_valid():
-            # post.tag.set = request.POST['tag']
             post.date_added = timezone.now()
             post.save()
-            return HttpResponseRedirect(reverse('index'))
-        else:
-            form = PostForm(request.POST)
+            return HttpResponseRedirect(reverse('IndexView'))
 
-    context = {'form': form,'post':post}
-    return render(request, 'edit_post.html', context)
+
+# def edit_post(request, post_id):
+#     post = get_object_or_404(Post, pk=post_id, author=request.user)
+#     form = PostForm(instance=post)
+#     # import pdb; pdb.set_trace()
+#     if request.method == "POST":
+#         form = PostForm(instance=post,data=request.POST)
+#         if form.is_valid():
+#             # post.tag.set = request.POST['tag']
+#             post.date_added = timezone.now()
+#             post.save()
+#             return HttpResponseRedirect(reverse('index'))
+#         else:
+#             form = PostForm(request.POST)
+
+#     context = {'form': form,'post':post}
+#     return render(request, 'edit_post.html', context)
 
 
 class ArchiveListView(TemplateView):
