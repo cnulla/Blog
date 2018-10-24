@@ -21,7 +21,7 @@ class IndexView(TemplateView):
     def get(self, *args, **kwargs):
         category = Category.objects.all()
         tags = Tag.objects.all()
-        posts = Post.objects.filter(is_archived=False).order_by('-date_added')
+        posts = Post.objects.filter(is_archived=False, is_draft=False).order_by('-date_added')
         context = {'posts': posts, 'tags': tags, 'category': category}
         return render(self.request, self.template_name, context)
 
@@ -65,11 +65,12 @@ class EditView(TemplateView):
         return render(self.request, self.template_name, {'post': post, 'form': form})
 
     def post(self, *args, **kwargs):
+        post = get_object_or_404(Post, pk=kwargs.get('id'), author=self.request.user)
         form = PostForm(instance=post, data=self.request.POST)
         if form.is_valid():
             post.date_added = timezone.now()
             post.save()
-            return HttpResponseRedirect(reverse('IndexView'))
+            return HttpResponseRedirect(reverse('index'))
 
 
 class ArchiveListView(TemplateView):
@@ -130,4 +131,3 @@ class DraftView(View):
         post.is_draft = False
         post.save()
         return redirect(reverse('blog_post', args=[post.id]))
-
