@@ -131,3 +131,10 @@ class DraftView(View):
         post.is_draft = False
         post.save()
         return redirect(reverse('blog_post', args=[post.id]))
+
+class DraftListView(TemplateView):
+    template_name = 'draft_list.html'
+
+    def get(self, *args, **kwargs):
+        draft = Post.objects.filter(is_draft=True)
+        return render(self.request, self.template_name, {'draft': draft})
