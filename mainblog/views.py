@@ -71,6 +71,7 @@ class EditView(TemplateView):
             post.save()
             return HttpResponseRedirect(reverse('IndexView'))
 
+
 class ArchiveListView(TemplateView):
     """ Display list of archive list
     """
@@ -79,6 +80,7 @@ class ArchiveListView(TemplateView):
     def get(self, *args, **kwargs):
         archive = Post.objects.filter(is_archived=True)
         return render(self.request, self.template_name, {'archive': archive})
+
 
 class ArchiveView(View):
     """ Option for users to archive the blog or not"""
@@ -92,31 +94,40 @@ class ArchiveView(View):
         return HttpResponseRedirect(reverse('archive_list'))
 
 
-@login_required
-def category_page(request, slug):
-    # Display list of blog per cateory
-    get_category = get_object_or_404(Category, slug=slug)
-    posts = Post.objects.filter(category=get_category)
-    return render(request, 'category_post.html', {'get_category': get_category,'posts': posts})
+class CategoryListView(TemplateView):
+    """Display all blogs under a category"""
+    template_name = 'category_post.html'
+
+    def get(self, *args, **kwargs):
+        cat = get_object_or_404(Category, slug=kwargs.get('slug'))
+        posts = Post.objects.filter(category=cat)
+        category = Category.objects.all()
+        context = {'category': category,'posts': posts}
+        return render(self.request, self.template_name, context)
 
 
-def tag_page(request, tag_id):
-    tags = get_object_or_404(Tag, pk=tag_id)
-    tag_post = Post.objects.filter(tag=tags.id)
-    return render(request, 'tag_page.html', {'tags': tags, 'tag_post': tag_post})
+class TagView(TemplateView):
+    """Display all blogs under a tag"""
+    template_name = 'tag_page.html'
+
+    def get(self, *args, **kwargs):
+        tags = get_object_or_404(Tag, pk=kwargs.get('id'))
+        tag_post = Post.objects.filter(tag=tags)
+        tag = Tag.objects.all()
+        context = {'tag': tag, 'tag_post': tag_post}
+        return render(self.request, self.template_name, context)
 
 
-def draft_post(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
-
-    if request.method == 'POST':
+class DraftView(View):
+    """Option for user if he/she want to draft her/his blog"""
+    def post(self, *args, **kwargs):
+        post = get_object_or_404(Post, pk=kwargs.get('id'))
         is_draft = post.is_draft
         if is_draft == False:
             post.is_draft = True
             post.save()
-            return redirect('blog_post', post_id=post.id)
-
+            return redirect(reverse('blog_post', args=[post.id]))
         post.is_draft = False
         post.save()
-        return redirect('blog_post', post_id=post.id)
+        return redirect(reverse('blog_post', args=[post.id]))
 
