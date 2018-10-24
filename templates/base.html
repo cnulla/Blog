@@ -51,7 +51,7 @@
                   <a class="nav-link" href="{% url 'archive_list' %}">Archive</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Draft</a>
+                  <a class="nav-link" href="{% url 'draft_list' %}">Draft</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'signout'%}">Logout</a>
@@ -59,6 +59,7 @@
             </ul>
     </nav>
 {% endif %}
+
     {% block content %}
     {% endblock %}
 
