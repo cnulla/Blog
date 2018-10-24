@@ -49,18 +49,11 @@ class BlogDetailView(TemplateView):
 
     def get(self, *args, **kwargs):
         try:
-            post = Post.objects.get(pk=kwargs.get('id'),author=self.request.user)
+            post = Post.objects.get(pk=kwargs.get('id'))
         except Post.DoesNotExist:
             raise Http404
         return render(self.request, self.template_name, {'post': post})
 
-# def blog_post(request, post_id):
-#     try:
-#         post = Post.objects.get(pk=post_id,author=request.user)
-#         tags = Post.objects.filter(tag=post.id)
-#     except Post.DoesNotExist:
-#         raise Http404
-#     return render(request, 'blog_post.html', {'post': post, 'tags':tags})
 
 class EditView(TemplateView):
     """ Let the user edit his/her blog"""
