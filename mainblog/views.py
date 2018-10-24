@@ -60,7 +60,7 @@ class EditView(TemplateView):
     template_name = 'edit_post.html'
 
     def get(self, *args, **kwargs):
-        post = get_object_or_404(Post, pk=post_id, author=self.request.user)
+        post = get_object_or_404(Post, pk=kwargs.get('id'), author=self.request.user)
         form = PostForm(instance=post)
         return render(self.request, self.template_name, {'post': post, 'form': form})
 
@@ -71,25 +71,6 @@ class EditView(TemplateView):
             post.save()
             return HttpResponseRedirect(reverse('IndexView'))
 
-
-# def edit_post(request, post_id):
-#     post = get_object_or_404(Post, pk=post_id, author=request.user)
-#     form = PostForm(instance=post)
-#     # import pdb; pdb.set_trace()
-#     if request.method == "POST":
-#         form = PostForm(instance=post,data=request.POST)
-#         if form.is_valid():
-#             # post.tag.set = request.POST['tag']
-#             post.date_added = timezone.now()
-#             post.save()
-#             return HttpResponseRedirect(reverse('index'))
-#         else:
-#             form = PostForm(request.POST)
-
-#     context = {'form': form,'post':post}
-#     return render(request, 'edit_post.html', context)
-
-
 class ArchiveListView(TemplateView):
     """ Display list of archive list
     """
@@ -99,15 +80,16 @@ class ArchiveListView(TemplateView):
         archive = Post.objects.filter(is_archived=True)
         return render(self.request, self.template_name, {'archive': archive})
 
-
-def archived_post(request, post_id):
-    try:
-        posts = Post.objects.get(pk=post_id, author=request.user)
-        posts.is_archived = True
-        posts.save()
-    except Post.DoesNotExist:
-        raise Http404
-    return HttpResponseRedirect(reverse('archive_list'))
+class ArchiveView(View):
+    """ Option for users to archive the blog or not"""
+    def get(self, *args, **kwargs):
+        try:
+            posts = Post.objects.get(pk=kwargs.get('id'), author=self.request.user)
+            posts.is_archived = True
+            posts.save()
+        except Post.DoesNotExist:
+            raise Http404
+        return HttpResponseRedirect(reverse('archive_list'))
 
 
 @login_required
