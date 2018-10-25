@@ -12,133 +12,129 @@ from django.utils import timezone
 from .models import Post, Category, Tag
 from .forms import PostForm, TagForm
 from django.contrib.auth.models import User
-from django.views.generic import TemplateView, View, ListView, DetailView
+from django.views.generic import TemplateView, View
 
 
-def index(request):
-    category = Category.objects.all()
-    tags = Tag.objects.all()
-    posts = Post.objects.filter(is_archived=False).order_by('-date_added')
-    draft = Post.objects.filter(is_draft=False)
-    if request.user.is_authenticated:
-        posts = posts.filter(author=request.user)
+class IndexView(TemplateView):
+    """ Display All Published Blogs of the user"""
+    template_name = 'home.html'
+    def get(self, *args, **kwargs):
+        category = Category.objects.all()
+        tags = Tag.objects.all()
+        posts = Post.objects.filter(is_archived=False, is_draft=False).order_by('-date_added')
+        context = {'posts': posts, 'tags': tags, 'category': category}
+        return render(self.request, self.template_name, context)
 
-    context = {'posts': posts, 'category': category, 'tags':tags,'draft': draft}
-    return render(request,'home.html', context)
 
+class CreateView(TemplateView):
+    """ Create a blog """
+    template_name = 'create_post.html'
 
-@login_required
-def create_post(request):
-    form =  PostForm()
-    # tag = TagForm()
+    def get(self, *args, **kwargs):
+        form = PostForm()
+        return render(self.request, self.template_name, {'form': form})
 
-    if request.method == 'POST':
-        import pdb; pdb.set_trace()
-        form = PostForm(request.POST, request.FILES)
-        # tag = TagForm(request.POST)
+    def post(self, *args, **kwargs):
+        form = PostForm(self.request.POST, self.request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = request.user
-            # post, created = Post.objects.get_or_create(defaults__exact=tag)
+            post.author = self.request.user
             post.save()
             return HttpResponseRedirect(reverse('index'))
-        else:
-            form = PostForm(request.POST)
-
-    context = {'form': form}
-    return render(request, 'create_post.html', context)
 
 
-# class BlogDetailView(DetailView):
-#     """ Blog Detail """
-#     model = Post
+class BlogDetailView(TemplateView):
+    """ Display the detail of the blog """
+    template_name = 'blog_post.html'
 
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         return context
-
-def blog_post(request, post_id):
-    try:
-        post = Post.objects.get(pk=post_id,author=request.user)
-        tags = Post.objects.filter(tag=post.id)
-    except Post.DoesNotExist:
-        raise Http404
-    return render(request, 'blog_post.html', {'post': post, 'tags':tags})
+    def get(self, *args, **kwargs):
+        try:
+            post = Post.objects.get(pk=kwargs.get('id'))
+        except Post.DoesNotExist:
+            raise Http404
+        return render(self.request, self.template_name, {'post': post})
 
 
-def edit_post(request, post_id):
-    post = get_object_or_404(Post, pk=post_id, author=request.user)
-    form = PostForm(instance=post)
-    # import pdb; pdb.set_trace()
-    if request.method == "POST":
-        form = PostForm(instance=post,data=request.POST)
+class EditView(TemplateView):
+    """ Let the user edit his/her blog"""
+    template_name = 'edit_post.html'
+
+    def get(self, *args, **kwargs):
+        post = get_object_or_404(Post, pk=kwargs.get('id'), author=self.request.user)
+        form = PostForm(instance=post)
+        return render(self.request, self.template_name, {'post': post, 'form': form})
+
+    def post(self, *args, **kwargs):
+        post = get_object_or_404(Post, pk=kwargs.get('id'), author=self.request.user)
+        form = PostForm(instance=post, data=self.request.POST)
         if form.is_valid():
-            # post.tag.set = request.POST['tag']
             post.date_added = timezone.now()
             post.save()
             return HttpResponseRedirect(reverse('index'))
-        else:
-            form = PostForm(request.POST)
-
-    context = {'form': form,'post':post}
-    return render(request, 'edit_post.html', context)
 
 
-# class ArchiveListView(ListView):
-#     """List of Blog Archives"""
-#     model = Post
-#     template_name = 'archive_list.html'
+class ArchiveListView(TemplateView):
+    """ Display list of archive list
+    """
+    template_name = 'archive_list.html'
 
-#     def get(self, *args, **kwargs):
-#         archive = Post.objects.filter(is_archived=True)
-#         context = {'archive': archive}
-#         return render(self.request, self.template_name, context)
-
-def archive_list(request):
-    archive = Post.objects.filter(is_archived=True)
-    return render(request, 'archive_list.html', {'archive': archive})
+    def get(self, *args, **kwargs):
+        archive = Post.objects.filter(is_archived=True)
+        return render(self.request, self.template_name, {'archive': archive})
 
 
-def archived_post(request, post_id):
-    try:
-        posts = Post.objects.get(pk=post_id, author=request.user)
-        posts.is_archived = True
-        posts.save()
-    except Post.DoesNotExist:
-        raise Http404
-    return HttpResponseRedirect(reverse('archive_list'))
+class ArchiveView(View):
+    """ Option for users to archive the blog or not"""
+    def get(self, *args, **kwargs):
+        try:
+            posts = Post.objects.get(pk=kwargs.get('id'), author=self.request.user)
+            posts.is_archived = True
+            posts.save()
+        except Post.DoesNotExist:
+            raise Http404
+        return HttpResponseRedirect(reverse('archive_list'))
 
 
-@login_required
-def category_page(request, slug):
-    # Display list of blog per cateory
-    get_category = get_object_or_404(Category, slug=slug)
-    posts = Post.objects.filter(category=get_category)
-    return render(request, 'category_post.html', {'get_category': get_category,'posts': posts})
+class CategoryListView(TemplateView):
+    """Display all blogs under a category"""
+    template_name = 'category_post.html'
+
+    def get(self, *args, **kwargs):
+        cat = get_object_or_404(Category, slug=kwargs.get('slug'))
+        posts = Post.objects.filter(category=cat)
+        category = Category.objects.all()
+        context = {'category': category,'posts': posts}
+        return render(self.request, self.template_name, context)
 
 
-def tag_page(request, tag_id):
-    tags = get_object_or_404(Tag, pk=tag_id)
-    tag_post = Post.objects.filter(tag=tags.id)
-    return render(request, 'tag_page.html', {'tags': tags, 'tag_post': tag_post})
+class TagView(TemplateView):
+    """Display all blogs under a tag"""
+    template_name = 'tag_page.html'
+
+    def get(self, *args, **kwargs):
+        tags = get_object_or_404(Tag, pk=kwargs.get('id'))
+        tag_post = Post.objects.filter(tag=tags)
+        tag = Tag.objects.all()
+        context = {'tag': tag, 'tag_post': tag_post}
+        return render(self.request, self.template_name, context)
 
 
-def draft_list(request, draft_id):
-    template = 'draft_list.html'
-    return render(request, template)
-
-
-def draft_post(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
-
-    if request.method == 'POST':
+class DraftView(View):
+    """Option for user if he/she want to draft her/his blog"""
+    def post(self, *args, **kwargs):
+        post = get_object_or_404(Post, pk=kwargs.get('id'))
         is_draft = post.is_draft
         if is_draft == False:
             post.is_draft = True
             post.save()
-            return redirect('blog_post', post_id=post.id)
-
+            return redirect(reverse('blog_post', args=[post.id]))
         post.is_draft = False
         post.save()
-        return redirect('blog_post', post_id=post.id)
+        return redirect(reverse('blog_post', args=[post.id]))
 
+class DraftListView(TemplateView):
+    template_name = 'draft_list.html'
+
+    def get(self, *args, **kwargs):
+        draft = Post.objects.filter(is_draft=True)
+        return render(self.request, self.template_name, {'draft': draft})
